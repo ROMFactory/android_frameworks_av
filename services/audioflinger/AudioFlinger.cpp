@@ -1052,6 +1052,7 @@ status_t AudioFlinger::setParameters(audio_io_handle_t ioHandle, const String8& 
 
         AudioParameter param = AudioParameter(keyValuePairs);
         String8 value, key;
+#ifdef QCOM_HARDWARE
         int i = 0;
 
         key = String8(AudioParameter::keyADSPStatus);
@@ -1066,6 +1067,7 @@ status_t AudioFlinger::setParameters(audio_io_handle_t ioHandle, const String8& 
                }
            }
         }
+#endif
 
         // disable AEC and NS if the device is a BT SCO headset supporting those pre processings
         if (param.get(String8(AUDIO_PARAMETER_KEY_BT_NREC), value) == NO_ERROR) {
