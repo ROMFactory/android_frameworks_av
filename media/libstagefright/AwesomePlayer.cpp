@@ -78,6 +78,7 @@ static const int64_t kInitFrameDurationUs = 16000;
 static const int64_t kScheduleLagGapUs = 1000;
 static const int64_t kDefaultEventDelayUs = 10000;
 int AwesomePlayer::mTunnelAliveAP = 0;
+static int64_t kVideoEarlyMarginUs = -10000LL;
 
 // maximum time in paused state when offloading audio decompression. When elapsed, the AudioPlayer
 // is destroyed to allow the audio DSP to power down.
@@ -2307,7 +2308,8 @@ void AwesomePlayer::onVideoEvent() {
                 Mutex::Autolock autoLock(mStatsLock);
                 mStats.mConsecutiveFramesDropped = 0;
             }
-            postVideoEvent_l(10000);
+            postVideoEvent_l((kVideoEarlyMarginUs - latenessUs) > 100000LL ?
+                                100000LL : (kVideoEarlyMarginUs - latenessUs));
             return;
         }
     }
