@@ -1281,14 +1281,12 @@ sp<AudioFlinger::PlaybackThread::Track> AudioFlinger::PlaybackThread::createTrac
         // This is probably too conservative, but legacy application code may depend on it.
         // If you change this calculation, also review the start threshold which is related.
         uint32_t latencyMs = mOutput->stream->get_latency(mOutput->stream);
-        uint32_t minBufCount = 0;
-        if (mSampleRate) {
-            minBufCount = latencyMs / ((1000 * mNormalFrameCount) / mSampleRate);
+        uint32_t minBufCount = latencyMs / ((1000 * mNormalFrameCount) / mSampleRate);
+        uint32_t defBufCount = (sampleRate == mSampleRate) ? 2 : 3;
+        if (minBufCount < defBufCount) {
+            minBufCount = defBufCount;
         }
-        if (minBufCount < 2) {
-            minBufCount = 2;
-        }
-        size_t minFrameCount = mNormalFrameCount * minBufCount;
+        size_t minFrameCount = mNormalFrameCount * minBufCount * sampleRate / mSampleRate;
         if (frameCount < minFrameCount) {
             frameCount = minFrameCount;
         }
