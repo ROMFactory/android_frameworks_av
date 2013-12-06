@@ -372,8 +372,9 @@ AudioFlinger::PlaybackThread::Track::Track(
             int sessionId,
             int uid,
             IAudioFlinger::track_flags_t flags)
-    :   TrackBase(thread, client, sampleRate, format, channelMask, frameCount, sharedBuffer,
-            sessionId, uid, true /*isOut*/),
+    :   TrackBase(thread, client, sampleRate, format, channelMask, frameCount, 
+     ((audio_stream_type_t)streamType == AUDIO_STREAM_VOICE_CALL)? IAudioFlinger::TRACK_VOICE_COMMUNICATION:0x0,
+    sharedBuffer, sessionId, uid, true /*isOut*/),
     mFillingUpStatus(FS_INVALID),
     // mRetryCount initialized later when needed
     mSharedBuffer(sharedBuffer),
@@ -1800,10 +1801,11 @@ AudioFlinger::RecordThread::RecordTrack::RecordTrack(
             audio_format_t format,
             audio_channel_mask_t channelMask,
             size_t frameCount,
+            uint32_t flags,
             int sessionId,
             int uid)
-    :   TrackBase(thread, client, sampleRate, format,
-                  channelMask, frameCount, 0 /*sharedBuffer*/, sessionId, uid, false /*isOut*/),
+    :   TrackBase(thread, client, sampleRate, format, channelMask, frameCount,
+                  flags, 0 /*sharedBuffer*/, sessionId, uid, false /*isOut*/),
         mOverflow(false)
 {
     ALOGV("RecordTrack constructor");

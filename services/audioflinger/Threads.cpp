@@ -4833,7 +4833,7 @@ sp<AudioFlinger::RecordThread::RecordTrack>  AudioFlinger::RecordThread::createR
         Mutex::Autolock _l(mLock);
 
         track = new RecordTrack(this, client, sampleRate,
-                      format, channelMask, frameCount, sessionId, uid);
+                      format, channelMask, frameCount, *flags, sessionId, uid);
 
         if (track->getCblk() == 0) {
             ALOGE("createRecordTrack_l() no control block");
